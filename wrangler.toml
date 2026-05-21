@@ -1,0 +1,22 @@
+# Router Worker for tools.synthesiswriting.org.
+#
+# Routes URL path prefixes to per-tool Cloudflare Pages projects. Each tool
+# stays in its own repo, its own Pages project, its own deploy lifecycle.
+# Adding a new tool is one route entry in src/worker.js.
+#
+# Routes:
+#   /slopcheck and /slopcheck/*  → slopcheck.pages.dev (proxies the path
+#                                   sans the /slopcheck prefix to the Pages
+#                                   project root)
+#   /                            → temporary landing page (will become a
+#                                   real tools-index page once more tools ship)
+#   anything else                → 404
+
+name = "tools-synthesiswriting-router"
+main = "src/worker.js"
+compatibility_date = "2026-05-21"
+
+# Custom domain binding.
+[[routes]]
+pattern = "tools.synthesiswriting.org/*"
+zone_name = "synthesiswriting.org"
