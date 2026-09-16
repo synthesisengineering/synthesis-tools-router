@@ -109,6 +109,7 @@ function landingHtml() {
 <body>
 <h1>${ROUTER_NAME}</h1>
 <p>Open source tools from the synthesis writing ecosystem.</p>
+<p class="ecosystem-purpose">AI to assist, augment, and amplify human capability, not replace people</p>
 <ul>
   <li><a href="/slopcheck/">slopcheck</a> — open source slop detection. Slop, not just AI.</li>
 </ul>
