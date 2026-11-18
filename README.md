@@ -24,13 +24,15 @@ Adding a new tool: append an entry to `TOOL_ROUTES` in `src/worker.js`. One line
 
 ```sh
 cd synthesis-tools-router
-wrangler deploy
+node scripts/deploy.mjs --dry-run   # the checks and the plan; changes nothing
+node scripts/deploy.mjs             # the production deploy, with the owner's approval for it
 ```
 
-The `wrangler.toml` declares the `tools.synthesiswriting.org/*` route on the `synthesiswriting.org` zone, so deploys take effect immediately.
+The deploy tool refuses unless the checkout is clean and at the tip of GitHub's `main` with CI passed, then runs `wrangler deploy` and reads `/` and `/slopcheck/` back from the live site. The `wrangler.toml` declares the `tools.synthesiswriting.org/*` route on the `synthesiswriting.org` zone, so deploys take effect immediately.
 
 ## Files
 
 - `src/worker.js` — the router logic
+- `scripts/deploy.mjs` — the deploy tool
 - `wrangler.toml` — Worker config + route binding
 - `package.json` — scripts (deploy / dev / tail)
