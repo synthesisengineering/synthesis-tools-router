@@ -1,0 +1,42 @@
+name: CI
+
+# The only merge gate: the router's own tests, exactly as `npm test` runs them locally, on every pull request and on
+# every push to main.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read  # every job's token reads the repository and nothing more; no job here uses a secret
+
+concurrency:
+  # A new push to a pull request cancels the run still going for the old one. A push to main always runs whole.
+  group: ${{ github.event_name == 'pull_request' && format('{0}-pr-{1}', github.workflow, github.event.pull_request.number) || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          package-manager-cache: false
+      # The Worker has no runtime dependencies and the tests import it directly, so nothing is installed first.
+      - run: npm test
+
+  ci:
+    # The one check branch protection requires on main: it runs after every other job, even when one fails, and passes
+    # only when all of them passed, so the jobs can change without touching the repository's settings.
+    if: always()
+    needs: [test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - run: test "${{ needs.test.result }}" = success
