@@ -54,14 +54,15 @@ and adds `npm ci` before the tests.
 
   Running it for real is a production deploy of the Worker on its custom domain,
   which the owner approves each time: run it only with the owner's approval for
-  that deploy. It refuses, before deploying anything, unless the tree is clean,
-  wrangler is installed, and HEAD is the tip of GitHub's `main` with CI passed for
-  it there. It then runs
-  `wrangler deploy` and reads the live site back: `/` must be the index this
-  commit's Worker renders, byte for byte, and `/slopcheck/` must answer with the
-  page of the Pages project the Worker sends it to. A deploy is complete only when
-  the tool exits 0. `test/deploy.test.js` tests it with every git, gh, wrangler and
-  network call faked.
+  that deploy. A real run waits for the principal's code at the synthesis guard
+  (his `deploy_patterns`), and `--dry-run` does not. It refuses, before deploying
+  anything, unless the tree is clean, wrangler is installed, and HEAD is the tip
+  of GitHub's `main` with CI passed for it there. It then runs `wrangler deploy`
+  and reads the live site back: `/` must be the index this commit's Worker
+  renders, byte for byte, and `/slopcheck/` must answer with the page of the
+  Pages project the Worker sends it to. A deploy is complete only when the tool
+  exits 0. `test/deploy.test.js` tests it with every git, gh, wrangler and network
+  call faked.
 - `npm run deploy` and a bare `wrangler deploy` skip those checks: deploy with the
   tool.
 - The Worker is deployed, not released: no tag or package is published from this
